@@ -17,5 +17,5 @@ if [[ ! -f log.log ]]; then # if log/$date/ file doesn't exist
     touch log.log
 fi
 cd ../ # set dir to ~/bin/AutoWallpaper/log
-echo "$date ($time): $1" >> full-log.log # write full-log
-echo "$date ($time): $1" >> $date/log.log # write $date/log.log
+echo "$date ($time): $1;" >> full-log.log # write full-log
+echo "$date ($time): $1;" >> $date/log.log # write $date/log.log
