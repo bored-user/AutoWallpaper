@@ -1,5 +1,6 @@
 #!/bin/bash
-if [ $1 -eq 1 ]; then
+proc=$(ps aux | grep [A]W-Main -wc)
+if [ $proc -eq 2 ]; then
     while ( true );
     do
         ~/bin/AutoWallpaper/tasks/AW-Change.sh
