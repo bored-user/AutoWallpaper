@@ -1,7 +1,7 @@
 # AutoWallpaper #
 
 Script that changes your (GNOME) desktop wallpaper every minute!<br>
-Based on a <a href="">Tasker project</a> created by <a href="https://t.me/TaskerSuperBrasil">Tasker Super Brasil</a> Telegram group.
+Based on a <a href="https://t.me/TaskerSuperBrasilCanal/872">Tasker project</a> created by <a href="https://t.me/TaskerSuperBrasil">Tasker Super Brasil</a> Telegram group.
 
 ## Usage ##
 Just create a folder on `~/Pictures` named `Wallpapers` and move your wallpapers there!<br>
