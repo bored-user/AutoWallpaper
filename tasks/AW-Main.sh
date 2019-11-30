@@ -1,10 +1,22 @@
 #!/bin/bash
+dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+cd $dir
+cd ../
+source settings.conf
 proc=$(ps aux | grep [A]W-Main -wc)
-if [ $proc -eq 2 ]; then # making sure a new instance isn't started. if this happens, there will be several files changing wallpaper every minute.
-    notify-send --icon="/home/$USER/bin/AutoWallpaper/img/favico.png" "AutoWallpaper" "New instance started." # notify
-    /home/$USER/bin/AutoWallpaper/tasks/AW-Log.sh "New instance started"
+if [ $proc -eq 2 ]; then # Making sure a new instance isn't started. If this happens, there will be several files changing wallpaper every minute.
+    if [ $notification_new_instances = "true" ] && [ $notification = "true" ]; then
+        notify-send --icon="img/favico.png" "AutoWallpaper" "New instance started." # Notify
+    fi
+    if [ $log_new_instances = "true" ] && [ $log = "true" ]; then
+        tasks/AW-Log.sh "New instance started" # Logging
+    fi
     while ( true ); do
-        /home/$USER/bin/AutoWallpaper/tasks/AW-Change.sh
-        sleep 60
+        tasks/AW-Change.sh # Execute change
+        sleep $sleep_time
     done
+else
+    if [ $notification_new_instances_fail = "true" ] && [ $notification = "true" ]; then
+        notify-send --icon="img/favico.png" "AutoWallpaper" "Script already running!" # Notify
+    fi
 fi

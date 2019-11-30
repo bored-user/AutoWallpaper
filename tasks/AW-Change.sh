@@ -1,11 +1,13 @@
 #!/bin/bash
-wallpaper=$(ls /home/$USER/Pictures/Wallpapers | shuf -n 1)
-trash=$(ls /home/$USER/bin/AutoWallpaper/trash | grep $wallpaper)
-if [ $trash = $wallpaper ]; then
-    until [[ ! $trash = $wallpaper ]]; do
-        wallpaper=$(ls /home/$USER/Pictures/Wallpapers | shuf -n 1)
-        trash=$(ls /home/$USER/bin/AutoWallpaper/trash | grep $wallpaper)
-    done
+dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+cd $dir
+cd ../
+source settings.conf
+wallpaper=$(ls $wallpaper_folder_location | shuf -n 1) # Randomize wallpaper
+gsettings set org.gnome.desktop.background picture-uri "file://$wallpaper_folder_location/$wallpaper" # Set wallpaper
+if [ $log_wallpaper_changes = "true" ] && [ $log = "true" ]; then
+    tasks/AW-Log.sh "$wallpaper moved to trash" # Logging
 fi
-gsettings set org.gnome.desktop.background picture-uri "file:///home/$USER/Pictures/Wallpapers/$wallpaper"
-/home/$USER/bin/AutoWallpaper/tasks/AW-Log.sh $wallpaper 
+if [ $notification_wallpaper_change = "true" ] && [ $notification = "true" ]; then
+    notify-send --icon="img/favico.png" "AutoWallpaper" "Wallpaper changed. New wallpaper: $wallpaper" # Notify
+fi
