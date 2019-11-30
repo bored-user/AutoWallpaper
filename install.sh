@@ -1,9 +1,9 @@
 #!/bin/bash
-if [[ ! -d ~/bin ]]; then # if local bin dir doesn't exist
-    mkdir ~/bin
+if [[ ! -d /home/$USER/bin ]]; then # if local bin dir doesn't exist
+    mkdir /home/$USER/bin
 fi
-if [[ ! -d ~/bin/AutoWallpaper ]]; then # if AW dir doesn't exist
-    mkdir ~/bin/AutoWallpaper
+if [[ ! -d /home/$USER/bin/AutoWallpaper ]]; then # if AW dir doesn't exist
+    mkdir /home/$USER/bin/AutoWallpaper
 fi
-cp -r * ~/bin/AutoWallpaper
+/bin/cp -rf * /home/$USER/bin/AutoWallpaper
 exit
