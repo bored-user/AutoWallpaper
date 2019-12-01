@@ -19,7 +19,7 @@ if [ $log = "true" ]; then
             mkdir $date
         fi
         cd $date
-        if [[ ! -f log.log ]]; then # If log/$date/ file doesn't exist
+        if [[ ! -f log.log ]]; then # If log/$date/log.log file doesn't exist
             touch log.log
         fi
         cd ../ # Set dir to log/
