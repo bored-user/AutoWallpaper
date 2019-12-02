@@ -12,7 +12,7 @@ source settings.conf
 # If it isn't 1 the script will just move the current wallpaper to trash folder & change the desktop wallpaper
 # ------------------------------------------------------------------------------------------------------------------------
 
-if [ $1 -eq 1]; then
+if [ $1 -eq 1 ]; then
     if [[ -d trash ]]; then
         rm -rf trash # Delete trash folder
         if [ $notification_delete_trash_folder = "true" ] && [ $notification = "true" ]; then
