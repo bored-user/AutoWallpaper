@@ -9,5 +9,5 @@ if [ $log_wallpaper_changes = "true" ] && [ $log = "true" ]; then
     tasks/AW-Log.sh $wallpaper # Logging
 fi
 if [ $notification_wallpaper_change = "true" ] && [ $notification = "true" ]; then
-    notify-send -t 2000 --icon="img/favico.png" "AutoWallpaper" "Wallpaper changed. New wallpaper: $wallpaper" # Notify
+    notify-send -t 1000 --icon="$dir/img/favico.png" "AutoWallpaper" "Wallpaper changed. New wallpaper: $wallpaper" # Notify
 fi

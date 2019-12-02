@@ -16,12 +16,12 @@ if [ $1 -eq 1]; then
     if [[ -d trash ]]; then
         rm -rf trash # Delete trash folder
         if [ $notification_delete_trash_folder = "true" ] && [ $notification = "true" ]; then
-            notify-send --icon="img/favico.png" "AutoWallpaper" "Deleted trash folder successfully." # Notify
+            notify-send --icon="$dir/img/favico.png" "AutoWallpaper" "Deleted trash folder successfully." # Notify
         fi
     else
         mkdir trash
         if [ $notification_delete_trash_folder_fail = "true" ] && [ $notification = "true" ]; then
-            notify-send --icon="img/favico.png" "AutoWallpaper" "Trash folder didn't exist, so no files were deleted!" # Notify
+            notify-send --icon="$dir/img/favico.png" "AutoWallpaper" "Trash folder didn't exist, so no files were deleted!" # Notify
         fi
     fi
 else
@@ -29,7 +29,7 @@ else
         mkdir trash
     fi
     if [ $notification_delete_wallpaper = "true" ] && [ $notification = "true" ]; then
-        notify-send --icon="img/favico.png" "AutoWallpaper" "Moving wallpaper to trash..." # Notify
+        notify-send --icon="$dir/img/favico.png" "AutoWallpaper" "Moving wallpaper to trash..." # Notify
     fi
     wallpaper=$(gsettings get org.gnome.desktop.background picture-uri) # Return format: 'file:///path/to/file/file.extension'
     wallpaper=${wallpaper:0,8} # Remove " 'file:/// "
