@@ -45,4 +45,4 @@ I've included a file named `settings.conf` (located on the project's root). You 
 * `wallpaper_folder_location`: Path to local wallpaper folder.
 * `sleep_time`: Time between wallpaper change (in seconds).<br><br><br>
 
-#### ** P.S.: Script will NOT work if `wallpaper_folder_location` option isn't set. ** ####
+#### **P.S.: Script will NOT work if `wallpaper_folder_location` option isn't set.** ####
