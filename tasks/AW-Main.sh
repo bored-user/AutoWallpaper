@@ -13,7 +13,7 @@ if [ $proc -eq 2 ]; then # Making sure a new instance isn't started. If this hap
     fi
     while ( true ); do
         tasks/AW-Change.sh # Execute change
-        if [ $leep_time != "" ]; then
+        if [ $sleep_time != "" ]; then
             sleep $sleep_time
         else
             notify-send --icon="$PWD/img/favico.png" "AutoWallpaper" "Sleep time variable is unset. Please set it on settings.conf file (this isn't a fatal error. Using '60' as the sleep time.)" # Notify
