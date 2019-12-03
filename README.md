@@ -51,4 +51,5 @@ On Linux versions newer then those, you can follow <a href="https://askubuntu.co
 I've included a folder named `nautilus-actions` which includes files that are supposed to be imported on Nautilus Actions.<br>
 The project **WORKS** without it but it's just way cooler to use it:<br>
 <img src="img/demo.jpg" style="border-radius: 50%;">
+
 #### **P.S.: I've included a folder named `wallpapers`, which contain 13 landscape 1920x1080 wallpapers. They'll be used if `wallpaper_folder_location` isn't set or a valid directory.** ####
