@@ -50,13 +50,7 @@ else
     wallpaper=${wallpaper:0,8} # Remove " 'file:/// "
     wallpaper=${wallpaper::-1} # Remove " ' "
     IFS='/' read -ra wallpaper_path <<< "$wallpaper" # Split string
-    wallpaper=${wallpaper_path[5]} # Get file
-    #[0] = [empty];
-    #[1] = home;
-    #[2] = $USER;
-    #[3] = Pictures;
-    #[4] = Wallpapers;
-    #[5] = Wallpaper_XYZ.jpg
+    wallpaper=${wallpaper_path[-1]} # Get file (last item of array)
     if [ $log_wallpaper_deletions = "true" ] && [ $log = "true" ]; then # If both options are true
         tasks/AW-Log.sh "$wallpaper moved to trash" # Logging
     fi
