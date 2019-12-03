@@ -53,4 +53,4 @@ The project **WORKS** without it but it's just way cooler to use it:<br><br>
 <img src="img/demo.jpg">
 
 
-#### **P.S.: I've included a folder named `wallpapers`, which contain 13 landscape 1920x1080 wallpapers. They'll be used if `wallpaper_folder_location` isn't set or a valid directory.** ####
+#### **P.S.: I've included a folder named `wallpapers`, which contain 13 landscape 1920x1080 wallpapers. They'll be used if `wallpaper_folder_location` isn't set or isn't a valid directory.** ####
