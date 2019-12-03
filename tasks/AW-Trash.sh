@@ -16,12 +16,22 @@ if [ $1 -eq 1 ]; then
     if [[ -d trash ]]; then
         rm -rf trash # Delete trash folder
         if [ $notification_delete_trash_folder = "true" ] && [ $notification = "true" ]; then
-            notify-send --icon="$PWD/img/favico.png" "AutoWallpaper" "Deleted trash folder successfully." # Notify
+            if [ -f img/favico ]; then
+                notify-send --icon="$PWD/img/favico" "AutoWallpaper" "Deleted trash folder successfully." # Notify
+            else
+                tasks/AW-Image.sh
+                notify-send --icon="$PWD/img/favico" "AutoWallpaper" "Deleted trash folder successfully." # Notify
+            fi       
         fi
     else
         mkdir trash
         if [ $notification_delete_trash_folder_fail = "true" ] && [ $notification = "true" ]; then
-            notify-send --icon="$PWD/img/favico.png" "AutoWallpaper" "Trash folder didn't exist, so no files were deleted!" # Notify
+            if [ -f img/favico ]; then
+                notify-send --icon="$PWD/img/favico" "AutoWallpaper" "Trash folder didn't exist, so no files were deleted!" # Notify
+            else
+                tasks/AW-Image.sh
+                notify-send --icon="$PWD/img/favico" "AutoWallpaper" "Trash folder didn't exist, so no files were deleted!" # Notify
+            fi
         fi
     fi
 else
@@ -29,7 +39,12 @@ else
         mkdir trash
     fi
     if [ $notification_delete_wallpaper = "true" ] && [ $notification = "true" ]; then
-        notify-send --icon="$PWD/img/favico.png" "AutoWallpaper" "Moving wallpaper to trash..." # Notify
+        if [ -f img/favico ]; then
+            notify-send --icon="$PWD/img/favico" "AutoWallpaper" "Moving wallpaper to trash..." # Notify
+        else
+            tasks/AW-Image.sh
+            notify-send --icon="$PWD/img/favico" "AutoWallpaper" "Moving wallpaper to trash..." # Notify
+        fi
     fi
     wallpaper=$(gsettings get org.gnome.desktop.background picture-uri) # Return format: 'file:///path/to/file/file.extension'
     wallpaper=${wallpaper:0,8} # Remove " 'file:/// "
@@ -46,10 +61,15 @@ else
         tasks/AW-Log.sh "$wallpaper moved to trash" # Logging
     fi
     tasks/AW-Change.sh # Change wallpaper (otherwise the bluescreen wallpaper will come up)
-    if [ $wallpaper_folder_location != "" ]; then
+    if [ $wallpaper_folder_location != "" ] && [ -d $wallpaper_folder_location ]; then
         mv $wallpaper_folder_location/$wallpaper trash # Move file to trash folder
     else
-        notify-send --icon="$PWD/img/favico.png" "AutoWallpaper" "Wallpaper folder location isn't set. The script cannot work without it. Exiting..." # Notify
-        exit
+        if [ -f img/favico ]; then
+            notify-send --icon="$PWD/img/favico" "AutoWallpaper" "Wallpaper folder location isn't set or isn't a valid directory. Using default ones." # Notify
+        else
+            tasks/AW-Image.sh
+            notify-send --icon="$PWD/img/favico" "AutoWallpaper" "Wallpaper folder location isn't set or isn't a valid directory. Using default ones." # Notify
+        fi
+        mv $PWD/wallpapers/$wallpaper trash
     fi
 fi
