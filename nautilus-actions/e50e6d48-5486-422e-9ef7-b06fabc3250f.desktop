@@ -1,0 +1,17 @@
+[Desktop Entry]
+Type=Action
+Name[en_US]=New instance
+Name[en]=New instance
+Name[C]=New instance
+TargetContext=false
+TargetLocation=true
+ToolbarLabel[en_US]=New instance
+ToolbarLabel[en]=New instance
+ToolbarLabel[C]=New instance
+Profiles=profile-zero;
+
+[X-Action-Profile profile-zero]
+Name[en_US]=Default profile
+Name[en]=Default profile
+Name[C]=Default profile
+Exec=/home/bored/Documents/Github/AutoWallpaper/tasks/AW-Main.sh 

@@ -1,0 +1,17 @@
+[Desktop Entry]
+Type=Action
+Name[en_US]=View gallery
+Name[en]=View gallery
+Name[C]=View gallery
+TargetContext=false
+TargetLocation=true
+ToolbarLabel[en_US]=View gallery
+ToolbarLabel[en]=View gallery
+ToolbarLabel[C]=View gallery
+Profiles=profile-zero;
+
+[X-Action-Profile profile-zero]
+Name[en_US]=Default profile
+Name[en]=Default profile
+Name[C]=Default profile
+Exec=nautilus /home/bored/Pictures/Wallpapers

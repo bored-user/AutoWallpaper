@@ -1,0 +1,17 @@
+[Desktop Entry]
+Type=Action
+Name[en_US]=Next wallpaper
+Name[en]=Next wallpaper
+Name[C]=Next wallpaper
+TargetContext=false
+TargetLocation=true
+ToolbarLabel[en_US]=Next wallpaper
+ToolbarLabel[en]=Next wallpaper
+ToolbarLabel[C]=Next wallpaper
+Profiles=profile-zero;
+
+[X-Action-Profile profile-zero]
+Name[en_US]=Default profile
+Name[en]=Default profile
+Name[C]=Default profile
+Exec=/home/bored/Documents/Github/AutoWallpaper/tasks/AW-Change.sh 

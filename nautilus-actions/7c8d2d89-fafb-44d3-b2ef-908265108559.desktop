@@ -1,0 +1,17 @@
+[Desktop Entry]
+Type=Action
+Name[en_US]=Move wallpaper to trash folder
+Name[en]=Move wallpaper to trash folder
+Name[C]=Move wallpaper to trash folder
+TargetContext=false
+TargetLocation=true
+ToolbarLabel[en_US]=Move wallpaper to trash folder
+ToolbarLabel[en]=Move wallpaper to trash folder
+ToolbarLabel[C]=Move wallpaper to trash folder
+Profiles=profile-zero;
+
+[X-Action-Profile profile-zero]
+Name[en_US]=Default profile
+Name[en]=Default profile
+Name[C]=Default profile
+Exec=/home/bored/Documents/Github/AutoWallpaper/tasks/AW-Trash.sh 
