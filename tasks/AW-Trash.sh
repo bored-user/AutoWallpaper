@@ -1,8 +1,8 @@
 #!/bin/bash
-dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-cd $dir
-cd ../
-source settings.conf
+dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )" # Get current path (where this script is being executed)
+cd $dir # Change directory to it
+cd ../ # Go one directory up (in order to get to project root)
+source settings.conf # Import settings.conf
 
 # ------------------------------------------------------------------------------------------------------------------------
 # DISCLAIMER
@@ -12,24 +12,24 @@ source settings.conf
 # If it isn't 1 the script will just move the current wallpaper to trash folder & change the desktop wallpaper
 # ------------------------------------------------------------------------------------------------------------------------
 
-if [ $1 -eq 1 ]; then
-    if [[ -d trash ]]; then
+if [ $1 -eq 1 ]; then # If par 1 = 1
+    if [[ -d trash ]]; then # If trash folder exist
         rm -rf trash # Delete trash folder
-        if [ $notification_delete_trash_folder = "true" ] && [ $notification = "true" ]; then
-            if [ -f img/favico ]; then
+        if [ $notification_delete_trash_folder = "true" ] && [ $notification = "true" ]; then # If both notification options are set to true
+            if [ -f img/favico ]; then # If file exist
                 notify-send --icon="$PWD/img/favico" "AutoWallpaper" "Deleted trash folder successfully." # Notify
             else
-                tasks/AW-Image.sh
+                tasks/AW-Image.sh # Download the file
                 notify-send --icon="$PWD/img/favico" "AutoWallpaper" "Deleted trash folder successfully." # Notify
             fi       
         fi
     else
-        mkdir trash
-        if [ $notification_delete_trash_folder_fail = "true" ] && [ $notification = "true" ]; then
-            if [ -f img/favico ]; then
+        mkdir trash # Create trash directory
+        if [ $notification_delete_trash_folder_fail = "true" ] && [ $notification = "true" ]; then # If both options are true
+            if [ -f img/favico ]; then # If file exist
                 notify-send --icon="$PWD/img/favico" "AutoWallpaper" "Trash folder didn't exist, so no files were deleted!" # Notify
             else
-                tasks/AW-Image.sh
+                tasks/AW-Image.sh # Donwload the file
                 notify-send --icon="$PWD/img/favico" "AutoWallpaper" "Trash folder didn't exist, so no files were deleted!" # Notify
             fi
         fi
@@ -38,11 +38,11 @@ else
     if [[ ! -d trash ]]; then # Create trash folder if not created
         mkdir trash
     fi
-    if [ $notification_delete_wallpaper = "true" ] && [ $notification = "true" ]; then
-        if [ -f img/favico ]; then
+    if [ $notification_delete_wallpaper = "true" ] && [ $notification = "true" ]; then # If both options are true
+        if [ -f img/favico ]; then # If file exist
             notify-send --icon="$PWD/img/favico" "AutoWallpaper" "Moving wallpaper to trash..." # Notify
         else
-            tasks/AW-Image.sh
+            tasks/AW-Image.sh # Download the file
             notify-send --icon="$PWD/img/favico" "AutoWallpaper" "Moving wallpaper to trash..." # Notify
         fi
     fi
@@ -57,19 +57,19 @@ else
     #[3] = Pictures;
     #[4] = Wallpapers;
     #[5] = Wallpaper_XYZ.jpg
-    if [ $log_wallpaper_deletions = "true" ] && [ $log = "true" ]; then
+    if [ $log_wallpaper_deletions = "true" ] && [ $log = "true" ]; then # If both options are true
         tasks/AW-Log.sh "$wallpaper moved to trash" # Logging
     fi
     tasks/AW-Change.sh # Change wallpaper (otherwise the bluescreen wallpaper will come up)
-    if [ $wallpaper_folder_location != "" ] && [ -d $wallpaper_folder_location ]; then
+    if [ $wallpaper_folder_location != "" ] && [ -d $wallpaper_folder_location ]; then # If the folder location is valid AND if it's a directory
         mv $wallpaper_folder_location/$wallpaper trash # Move file to trash folder
     else
-        if [ -f img/favico ]; then
+        if [ -f img/favico ]; then # If file exsit
             notify-send --icon="$PWD/img/favico" "AutoWallpaper" "Wallpaper folder location isn't set or isn't a valid directory. Using default ones." # Notify
         else
-            tasks/AW-Image.sh
+            tasks/AW-Image.sh # Download the file
             notify-send --icon="$PWD/img/favico" "AutoWallpaper" "Wallpaper folder location isn't set or isn't a valid directory. Using default ones." # Notify
         fi
-        mv $PWD/wallpapers/$wallpaper trash
+        mv $PWD/wallpapers/$wallpaper trash # Move default wallpaper to trash
     fi
 fi
