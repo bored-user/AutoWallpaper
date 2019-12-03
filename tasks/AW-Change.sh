@@ -3,7 +3,7 @@ dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )" # Get cu
 cd $dir # Change directory to it
 cd ../ # Go one directory up (in order to get to project root)
 source settings.conf # Import settings.conf
-if [ $wallpaper_folder_location != "" ] && [ -d $wallpaper_folder_location ]; then # If variable isn't set AND is a valid dir
+if [ $wallpaper_folder_location != "" ] && [ -d $wallpaper_folder_location ]; then # If variable is set AND is a valid dir
     wallpaper=$(ls $wallpaper_folder_location | shuf -n 1) # Randomize wallpaper
     gsettings set org.gnome.desktop.background picture-uri "file://$wallpaper_folder_location/$wallpaper" # Set wallpaper
 else
