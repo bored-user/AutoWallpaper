@@ -5,38 +5,26 @@ cd ../ # Go one directory up (in order to get to project root)
 source settings.conf # Import settings.conf
 proc=$(ps aux | grep [A]W-Main -wc) # Filter proc list, searching "AW-Main". The -wc flag makes it return an integer
 if [ $proc -eq 2 ]; then # Making sure a new instance isn't started. If this happens, there will be several files changing wallpaper every minute.
-    if [ $notification_new_instances = "true" ] && [ $notification = "true" ]; then # If new instances and notification options are enabled
-        if [ -f img/favico ]; then # If file exist
-            notify-send --icon="$PWD/img/favico" "AutoWallpaper" "New instance started." # Notify
-        else # If file doesn't exist
-            tasks/AW-Image.sh # Download the file
-            notify-send --icon="$PWD/img/favico" "AutoWallpaper" "New instance started." # Notify
-        fi
-    fi
+    tasks/AW-Notification.sh "New instance started." "notification_new_instances"
     if [ $log_new_instances = "true" ] && [ $log = "true" ]; then # If logging AND new instances options are true
         tasks/AW-Log.sh "New instance started" # Logging
     fi
     while ( true ); do # Loop
-        tasks/AW-Change.sh # Execute change
-        if [ $sleep_time = "" ]; then # If sleep time isn't set
-            if [ -f img/favico ]; then # If file exist
-                notify-send --icon="$PWD/img/favico" "AutoWallpaper" "Sleep time variable is unset. Please set it on settings.conf file (this isn't a fatal error. Using '60' as the sleep time.)" # Notify
-            else
-                tasks/AW-Image.sh # Download the file
-                notify-send --icon="$PWD/img/favico" "AutoWallpaper" "Sleep time variable is unset. Please set it on settings.conf file (this isn't a fatal error. Using '60' as the sleep time.)" # Notify
-            fi
+        tasks/AW-Change.sh # Execute change task
+        if [ -z ${sleep_time+x} ]; then # If sleep time isn't set
+            tasks/AW-Notification.sh "Sleep time variable is unset. Please set it on settings.conf file (this isn't a fatal error. Using '60' as the sleep time.)" 0 "urgent"
             sleep 60 # Default sleep time. Will only be executed if the previous variable isn't set
         else
-            sleep $sleep_time # Sleep value set by user on settings.conf
+            if [ $wallpaper_change_interval_unit = "sec" ]; then
+                sleep $sleep_time # Sleep value set by user on settings.conf
+            elif [ $wallpaper_change_interval_unit = "min" ]; then
+                let sleep_time=$sleep_time*60 # Minute to second
+                sleep $sleep_time # Sleep
+            else
+                ./AW-Crontab.sh $wallpaper_change_interval_time $PWD # Unit will either be "reboot" or "day"
+            fi
         fi
     done
 else
-    if [ $notification_new_instances_fail = "true" ] && [ $notification = "true" ]; then # If new instance fail AND notification options are true
-        if [ -f img/favico ]; then # If file exist
-            notify-send --icon="$PWD/img/favico" "AutoWallpaper" "Script already running!" # Notify
-        else
-            tasks/AW-Image.sh # Download the file
-            notify-send --icon="$PWD/img/favico" "AutoWallpaper" "Script already running!" # Notify
-        fi
-    fi
+    tasks/AW-Notification.sh "Script already running!" "notification_new_instances_fail"
 fi
