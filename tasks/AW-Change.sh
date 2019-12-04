@@ -14,4 +14,4 @@ fi
 if [ $log_wallpaper_changes = "true" ] && [ $log = "true" ]; then
     tasks/AW-Log.sh $wallpaper # Logging
 fi
-tasks/AW-Notification.sh "Wallpaper changed. New wallpaper: $wallpaper" $PWD "notification_wallpaper_change"
+tasks/AW-Notification.sh "Wallpaper changed. New wallpaper: $wallpaper" "notification_wallpaper_change"
