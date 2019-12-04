@@ -18,11 +18,6 @@ if [ ! -z ${1+x} ] && [ ! -z ${2+x} ]; then # $1 = Message
         fi
     fi
 else
-    
-    if [ -f img/favico ]; then # If file exist
-        notify-send --icon="$PWD/img/favico" "AutoWallpaper" "AW-Notify script called without parameters. Exiting..." # Notify
-    else
-        tasks/AW-Image.sh # Download the file
-        notify-send --icon="$PWD/img/favico" "AutoWallpaper" "AW-Notify script called without parameters. Exiting..." # Notify
-    fi
+    tasks/AW-Notification.sh "AW-Notify script called without parameters. Exiting..." 0 "urgent"
+    exit
 fi
