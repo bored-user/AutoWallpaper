@@ -11,15 +11,15 @@ if [ $proc -eq 2 ]; then # Making sure a new instance isn't started. If this hap
     fi
     while ( true ); do # Loop
         tasks/AW-Change.sh # Execute change task
-        if [ -z ${sleep_time+x} ]; then # If sleep time isn't set
-            tasks/AW-Notification.sh "Sleep time variable is unset. Please set it on settings.conf file (this isn't a fatal error. Using '60' as the sleep time.)" 0 "urgent"
+        if [ -z ${wallpaper_change_interval_time+x} ]; then # If sleep time isn't set
+            tasks/AW-Notification.sh "Sleep time variable (wallpaper_change_interval_time) is unset. Please set it on settings.conf file (this isn't a fatal error. Using '60' as the sleep time.)" 0 "urgent"
             sleep 60 # Default sleep time. Will only be executed if the previous variable isn't set
         else
             if [ $wallpaper_change_interval_unit = "sec" ]; then
-                sleep $sleep_time # Sleep value set by user on settings.conf
+                sleep $wallpaper_change_interval_time # Sleep value set by user on settings.conf
             elif [ $wallpaper_change_interval_unit = "min" ]; then
-                let sleep_time=$sleep_time*60 # Minute to second
-                sleep $sleep_time # Sleep
+                let wallpaper_change_interval_time=$wallpaper_change_interval_time*60 # Minute to second
+                sleep $wallpaper_change_interval_time # Sleep
             else
                 ./AW-Crontab.sh $wallpaper_change_interval_time $PWD # Unit will either be "reboot" or "day"
             fi
