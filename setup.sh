@@ -24,7 +24,6 @@ then
 else
     echo "File won't be deleted."
 fi
-rm -rf INSTALL
 rm -rf resources
 sudo cp -r $dir /usr/bin/AutoWallpaper
 echo "Adding 'AutoWallpaper' folder to "'$PATH'"..."
