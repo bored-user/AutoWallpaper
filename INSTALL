@@ -1,0 +1,11 @@
+In order to install, just run setup.sh file.
+The script will ask sudo password to install packages like uznip.
+
+The script will also modify the $PATH enviroment variable. It just adds itself there.
+
+Hope you enjoy it!
+
+
+Official Github Repository: https://github.com/bored-user/AutoWallpaper
+Telegram: @bored_user
+Github: @bored-user

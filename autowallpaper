@@ -1,0 +1,205 @@
+#!/bin/bash
+dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )" # Get current path (where this script is being executed)
+cd $dir # Change directory to it
+source settings.conf # Import settings.conf
+case $# in
+    0)
+    	echo "autowallpaper: missing file operand
+Try 'autowallpaper --help' for more information."
+exit
+esac
+
+autowallpaper_log() {
+	cd $dir
+	if ([ $log_wallpaper_changes = "true" ] || [ $log_wallpaper_deletions = "true" ] || [ $log_new_instances = "true" ]) && [ $log = "true" ]; then # If wallpaper changes/deletion/new instances logging is (are) true AND if logging is enabled.
+    	date=$(date +%Y-%m-%d) # yy-mm-dd
+    	time=$(date +%r) # X:YY:ZZ AM/PM
+    	time=${time::-1} # Remove last character (which is blank)
+    	source settings.conf # Re-import file in order to fill date and time variables
+    	if [[ ! -d log ]]; then # If log dir doesn't exist
+    	    mkdir log
+    	fi
+    	cd log
+    	if [[ ! -f full-log.log ]]; then # If full-log file doesn't exist
+    	    touch full-log.log
+    	fi
+    	if [[ ! -d $date ]]; then # If log/$date dir doesn't exist
+    	    mkdir $date
+    	fi
+    	cd $date
+    	if [[ ! -f log.log ]]; then # If log/$date/log.log file doesn't exist
+    	    touch log.log
+    	fi
+    	cd ../ # Set dir to log/
+    	echo "$log_time_format$1;" >> full-log.log # Write full-log
+    	echo "$log_time_format$1;" >> $date/log.log # Write $date/log.log
+	fi
+}
+
+autowallpaper_notification() {
+	cd $dir
+	if [ ! -z ${1+x} ] && [ ! -z ${2+x} ]; then # $1 = Message, $2 = Condition, $3 = Urgency
+    	if ([ ${!2} = "true" ] && [ $notification = "true" ]) || [ $3 = "urgent" ]; then # If new instance fail AND notification options are true
+    	    if [ -f img/favico ]; then # If file exist
+    	        notify-send --icon="$PWD/img/favico" "AutoWallpaper" "$1" # Notify
+    	    else
+    	        wget -qO img/favico "https://yt3.ggpht.com/a/AGF-l780UJkGtvM9qZ6dEPig75iDfJYGre5egD5ZIw=s288-c-k-c0xffffffff-no-rj-mo" # Download the file
+    	        notify-send --icon="$PWD/img/favico" "AutoWallpaper" "$1" # Notify
+    	    fi
+    	fi
+	else
+	    autowallpaper_notification "AW-Notify script called without parameters. Exiting..." 0 "urgent"
+	    exit
+	fi
+}
+
+autowallpaper_change() {
+	cd $dir
+	if [ ! -z ${wallpaper_folder_location+x} ] && [ -d $wallpaper_folder_location ]
+	then # If variable is set AND is a valid dir
+	    wallpaper=$(ls $wallpaper_folder_location | shuf -n 1) # Randomize wallpaper
+	    gsettings set org.gnome.desktop.background picture-uri "file://$wallpaper_folder_location/$wallpaper" # Set wallpaper
+	else
+	    autowallpaper_notification "Wallpaper folder location isn't set or isn't a valid directory. Using default ones." 0 "urgent"
+	    wallpaper=$(ls $PWD/wallpapers | shuf -n 1) # Randomize wallpaper
+	    gsettings set org.gnome.desktop.background picture-uri "file://$PWD/wallpapers/$wallpaper" # Set wallpaper
+	fi
+	autowallpaper_log $wallpaper # Logging
+	autowallpaper_notification "Wallpaper changed. New wallpaper: $wallpaper" "notification_wallpaper_change"
+}
+
+autowallpaper_crontab() {
+	cd $dir
+	cron=$(crontab -l | grep AW) # Get all cron entries that contain AW
+	if [ ! -z ${1+x} ]; then # If $1 is set
+	    week_days=("Sunday" "Monday" "Tuesday" "Wednesday" "Thursday" "Friday" "Saturday")
+	    if [[ $1 =~ [0-9] ]] && [ $1 -ge 0 ] && [ $1 -le 6 ]; then # If 0 <= $1 <= 6 (because it needs to be greater or equal to 0 and less or equal to 6). Means that variable is set to week day.
+	        if [[ ! $cron == *"* * * *"*"$PWD/tasks/AW-Change.sh"* ]]; then #  There isn't a week day entry created.
+	            (crontab -l 2>/dev/null; echo "* * * * $1 $PWD/tasks/AW-Change.sh") | crontab - # Add crontab job. $1 will be 'day(#)' (value between 0 and 6, indicated by the user on settings.conf file).
+	            tasks/AW-Notification.sh "Wallpaper change set! Will change every ${week_days[$1]}." 0 "urgent"
+	        fi
+	    elif [ $1 = "@reboot" ] || [ $1 = "reboot" ]; then # $1 = "reboot" or "@reboot"
+	        if [[ ! $cron == *"@reboot $PWD/tasks/AW-Change.sh"* ]]; then # No entry created yet.
+	            (crontab -l 2>/dev/null; echo "@reboot $PWD/tasks/AW-Change.sh") | crontab - # Add crontab job.
+	            tasks/AW-Notification.sh "Wallpaper change set! Will change on boot." 0 "urgent"
+	        fi
+	    elif [[ ! $cron == *"@reboot $PWD/tasks/AW-Main.sh"* ]] && [ $wallpaper_new_instance_reboot = "true" ]; then # No **new instance** entry created yet AND new instance on boot variable is set to true
+	        (crontab -l 2>/dev/null; echo "@reboot $PWD/tasks/AW-Change.sh") | crontab - # Add crontab job.
+	        tasks/AW-Notification.sh "Wallpaper change set! Will start a new instance on boot." 0 "urgent"
+	    else # If it isn't any of these (it's not valid)
+	        tasks/AW-Notification.sh "wallpaper_change_interval_unit variable isn't valid. Check settings.conf file." 0 "urgent"
+	    fi   
+	fi
+}
+
+autowallpaper_new() {
+	cd $dir
+	proc=$(ps aux | grep [A]W-Main -wc) # Filter proc list, searching "AW-Main". The -wc flag makes it return an integer
+	if [ $proc -eq 0 ]
+	then # Making sure a new instance isn't started. If this happens, there will be several files changing wallpaper every minute.
+	    autowallpaper_notification "New instance started." "notification_new_instances"
+	    if [ $log_new_instances = "true" ] && [ $log = "true" ]
+		then # If logging AND new instances options are true
+	        autowallpaper_log "New instance started" # Logging
+	    fi
+	    while ( true ); do # Loop
+	        autowallpaper_change # Execute change task
+	        if [ -z ${wallpaper_change_interval_time+x} ]
+			then # If sleep time isn't set
+	            autowallpaper_notification "Sleep time variable (wallpaper_change_interval_time) is unset. Please set it on settings.conf file (this isn't a fatal error. Using '60' as the sleep time.)" 0 "urgent"
+	            sleep 60 # Default sleep time. Will only be executed if the previous variable isn't set
+	        else
+	            if [ $wallpaper_change_interval_unit = "sec" ]
+				then
+	                sleep $wallpaper_change_interval_time # Sleep value set by user on settings.conf
+	            elif [ $wallpaper_change_interval_unit = "min" ]
+				then
+	                let wallpaper_change_interval_time=$wallpaper_change_interval_time*60 # Minute to second
+	                sleep $wallpaper_change_interval_time # Sleep
+	            else
+	                autowallpaper_crontab $wallpaper_change_interval_time $PWD # Unit will either be "reboot" or "day"
+	            fi
+	        fi
+	    done
+	else
+	    autowallpaper_notification "Script already running!" "notification_new_instances_fail"
+	fi
+}
+
+autowallpaper_trash() {
+	cd $dir
+	if [ ! -d trash ]
+	then # Create trash folder if not created
+        mkdir trash
+    fi
+    autowallpaper_notification "Moving wallpaper to trash..." "notification_delete_wallpaper"
+    wallpaper=$(gsettings get org.gnome.desktop.background picture-uri) # Return format: 'file:///path/to/file/file.extension'
+    wallpaper=${wallpaper:0,8} # Remove " 'file:/// "
+    wallpaper=${wallpaper::-1} # Remove " ' "
+    IFS='/' read -ra wallpaper_path <<< "$wallpaper" # Split string
+    wallpaper=${wallpaper_path[-1]} # Get file (last item of array)
+    if [ $log_wallpaper_deletions = "true" ] && [ $log = "true" ]
+	then # If both options are true
+        autowallpaper_log "$wallpaper moved to trash" # Logging
+    fi
+    if [ ! -z ${wallpaper_folder_location+x} ] && [ -d $wallpaper_folder_location ]
+	then # If the folder location is valid AND if it's a directory
+        mv $wallpaper_folder_location/$wallpaper trash # Move file to trash folder
+		autowallpaper_change # Change wallpaper (otherwise the bluescreen wallpaper will come up)
+    else
+        autowallpaper_notification "Wallpaper folder location isn't set or isn't a valid directory. Using default ones." 0 "urgent"
+        mv $PWD/wallpapers/$wallpaper trash # Move default wallpaper to trash
+		autowallpaper_change # Change wallpaper (otherwise the bluescreen wallpaper will come up)
+    fi
+}
+
+autowallpaper_delete() {
+	cd $dir
+	if [ -d trash ]
+	then # If trash folder exist
+        rm -rf trash # Delete trash folder
+        autowallpaper_notification "Deleted trash folder successfully." "notification_delete_trash_folder"
+    else
+        mkdir trash # Create trash directory
+        autowallpaper_notification "Trash folder didn't exist, so no files were deleted!" "notification_delete_trash_folder_fail"
+    fi
+}
+
+if [ $1 = "-c" ] || [ $1 = "--change" ]
+then
+	autowallpaper_change
+elif [ $1 = "-n" ] || [ $1 = "--new" ]
+then
+	autowallpaper_new
+elif [ $1 = "-g" ] || [ $1 = "--gallery" ]
+then
+	nautilus $wallpaper_folder_location
+elif [ $1 = "-t" ] || [ $1 = "--trash" ]
+then
+	autowallpaper_trash
+elif [ $1 = "-d" ] || [ $1 = "--delete" ]
+then
+	autowallpaper_delete
+elif [ $1 = "-l" ] || [ $1 = "--log" ]
+then
+	editor log/full-log.log
+elif [ $1 = "-s" ] || [ $1 = "--settings" ]
+then
+	editor settings.conf
+else
+	echo "Usage: autowallpaper [OPTION]...
+Change GNOME desktop wallpaper automatically.
+
+  -c, --change                  Change desktop wallpaper.
+  -n, --new                     Start new instance of script (daemon)
+  -g, --gallery                 Open wallpaper gallery
+  -t, --trash                   Move current wallpaper to temporary trash folder
+  -d, --delete                  Delete temporary trash folder
+  -l, --log                     Open log
+  -s, --settings                Edit settings file
+  -h, --help					Display this help message
+
+Official Github Repository: https://github.com/bored-user/AutoWallpaper
+Telegram: @bored_user
+Github: @bored-user"
+fi
