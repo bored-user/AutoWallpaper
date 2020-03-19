@@ -47,7 +47,7 @@ I've included a file named `settings.conf` (located on the project's root). You 
 
 ## nautilus-actions ##
 On Ubuntu 14.04 LTS, Xenial 16.04 LTS and Artful 17.10, the `nautilus-actions` package can be installed through normal installation procedures.<br>
-On Linux versions newer then those, you can follow <a href="https://askubuntu.com/questions/1030940/nautilus-actions-in-18-04">this</a> link to install it.<br>
+On Linux versions newer then those, you can follow <a style="font-size: 24px" href="https://askubuntu.com/questions/1030940/nautilus-actions-in-18-04">this</a> link to install it.<br>
 I've included a folder named `nautilus-actions` which includes files that are supposed to be imported on Nautilus Actions.<br>
 The project **WORKS** without it but it's just way cooler to use it:<br><br>
 <img src="img/demo.jpg">
