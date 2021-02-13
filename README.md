@@ -9,24 +9,16 @@ Every minute, the daemon will randomize a file at `/home/$USER/Pictures/Wallpape
 
 ## Log ##
 The script generates logs inside the `log` folder.<br><br>
-**Format:**<br>
-<ul>
-    <li>log/
-        <ul>
-            <li>full-log.log</li>
-            <li>date-1/
-                <ul>
-                    <li>log.log</li>
-                </ul>
-            </li>
-            <li>date-2/
-                <ul>
-                    <li>log.log</li>
-                </ul>
-            </li>
-        </ul>
-    </li>
-</ul>
+**Format:**
+
+* log/
+    * full-log.log
+    * date-1/
+        * log.log
+    * date-2/
+        * log.log
+        
+        
 Every execution, the `AW-Main.sh` script calls `AW-Change.sh` which calls `AW-Log.sh` script which checks if there's a folder named with the current date (date +%Y-%m-%d). If there's not, it creates it. Every time it logs, it write a new entry on both `full-log.log` and `date-xyz/log.log` files.
 
 ## settings.conf ##
